@@ -17,7 +17,11 @@
   },
   "homepage": "https://github.com/Ayush01015/DevTinder#readme",
   "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "cookie-parser": "^1.4.7",
     "express": "^5.1.0",
-    "jsonwebtoken": "^9.0.3"
+    "jsonwebtoken": "^9.0.3",
+    "mongoose": "^9.0.1",
+    "validator": "^13.15.26"
   }
 }
