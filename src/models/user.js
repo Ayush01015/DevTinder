@@ -1,4 +1,6 @@
 const mongoose = require("mongoose");
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
 
 const userSchema = new mongoose.Schema(
   {
@@ -64,6 +66,31 @@ const userSchema = new mongoose.Schema(
     timestamps: true,
   }
 );
+
+/*
+  "this" is an instance of userSchema which represent current user.
+  so writing this._id is same as writing user._id where user is currect user for ex. Ayush, Vishal, ...
+*/
+
+userSchema.methods.getJWTtoken = async function () {
+  return await jwt.sign({ _id: this._id }, "wifuh#%#@$!@#()989", {
+    expiresIn: "7d",
+  });
+};
+
+userSchema.methods.validatePassword = async function (password) {
+  return await bcrypt.compare(password, this.password);
+};
+
+userSchema.methods.toJSON = function() {
+  const user = this;
+  const userObject = user.toObject();
+
+  delete userObject.password;
+  delete userObject.__v;
+
+  return userObject;
+};
 
 const User = mongoose.model("User", userSchema);
 

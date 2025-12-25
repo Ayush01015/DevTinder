@@ -1,4 +1,4 @@
-const { dummyUsers } = require("./data");
+const { dummyUsers } = require("./data.js");
 const { JWT_SECRET } = require("./token.js");
 const jwt = require("jsonwebtoken");
 
