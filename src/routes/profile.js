@@ -60,4 +60,16 @@ router.patch("/profile/edit", userAuth, async (req, res, next) => {
   }
 });
 
+// const getProfileHandler = (req,res,next) => {
+//     console.log('Final Handler: Sending Profile Data...');
+//     const user = req.user;
+//     return res.status(200).json({
+//         id: user.id,
+//         name: user.name,
+//         role: user.role,
+//         settings: user.profileData,
+//         message: "Data retrieved successfully via middleware chain."
+//     });
+// }
+
 module.exports = router;

@@ -47,12 +47,18 @@ router.get("/user/connections", userAuth, async (req, res) => {
         { fromUserID: loggedInUser._id, status: "accepted" },
       ],
     })
-    .populate("fromUserID", "firstName lastName avatar age gender about skills")
-    .populate("toUserID", "firstName lastName avatar age gender about skills");
+      .populate(
+        "fromUserID",
+        "firstName lastName avatar age gender about skills"
+      )
+      .populate(
+        "toUserID",
+        "firstName lastName avatar age gender about skills"
+      );
 
     const data = connectionRequests.map((row) => {
       if (row.fromUserID._id.toString() === loggedInUser._id.toString()) {
-        return row.toUserID; 
+        return row.toUserID;
       }
       return row.fromUserID;
     });
@@ -127,6 +133,46 @@ router.delete("/user", async (req, res) => {
     return res
       .status(500)
       .json({ error: "Something went wrong: " + error.message });
+  }
+});
+
+router.get("/feed", userAuth, async (req, res) => {
+  try {
+    const loggedInUser = req.user;
+
+    const page = parseInt(req.query.page) || 1;
+    let limit = parseInt(req.query.limit) || 10;
+    limit = limit > 50 ? 50 : limit;
+    const skip = (page - 1) * limit;
+
+    const connectionRequests = await ConnectionRequest.find({
+      $or: [{ fromUserID: loggedInUser._id }, { toUserID: loggedInUser._id }],
+    }).select("fromUserID toUserID");
+
+    const hideUserFromFeed = new Set();
+
+    connectionRequests.forEach((req) => {
+      hideUserFromFeed.add(req.fromUserID.toString());
+      hideUserFromFeed.add(req.toUserID.toString());
+    });
+
+    const users = await User.find({
+      $and: [
+        { _id: { $nin: Array.from(hideUserFromFeed) } },
+        { _id: { $ne: loggedInUser._id } },
+      ],
+    })
+      .select("firstName lastName avatar age gender about skills")
+      .skip(skip)
+      .limit(limit);
+
+    return res.status(200).json({
+      data: users,
+    });
+  } catch (error) {
+    return res.status(400).json({
+      error: error.message || "something went wrong",
+    });
   }
 });
 

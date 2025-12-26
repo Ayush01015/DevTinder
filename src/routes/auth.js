@@ -70,23 +70,23 @@ router.post("/logout",(req,res,next)=>{
 
 
 
-router.get("/feed", userAuth, async (req, res, next) => {
-  try {
-    const users = await User.find({});
-    if (users.length === 0) {
-      return res.status(404).json({
-        error: "User not found",
-      });
-    } else {
-      return res.status(200).json({
-        users,
-      });
-    }
-  } catch (error) {
-    return res.status(400).json({
-      error: "something went wrong",
-    });
-  }
-});
+// router.get("/feed", userAuth, async (req, res, next) => {
+//   try {
+//     const users = await User.find({});
+//     if (users.length === 0) {
+//       return res.status(404).json({
+//         error: "User not found",
+//       });
+//     } else {
+//       return res.status(200).json({
+//         users,
+//       });
+//     }
+//   } catch (error) {
+//     return res.status(400).json({
+//       error: "something went wrong",
+//     });
+//   }
+// });
 
 module.exports = router;
